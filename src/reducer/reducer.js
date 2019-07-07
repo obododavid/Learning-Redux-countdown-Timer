@@ -29,6 +29,7 @@ const reducer = (state, action) =>{
 					seconds: state.seconds + 1
 				}	
 			};
+			break ;
 		case "DECREASE_VALUE":
 			console.log(activeSession)
 			if(activeSession=== "DAYS"){
@@ -52,6 +53,7 @@ const reducer = (state, action) =>{
 					seconds: state.seconds - 1
 				}	
 			};
+			break ;
 		default:
 			return state;
 	}
