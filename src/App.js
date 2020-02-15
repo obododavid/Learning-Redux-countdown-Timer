@@ -1,12 +1,25 @@
 import React, { Component } from "react";
 import "./App.css";
-import {store} from './store/store'
 import {setSession} from './actions/action'
 import {countUp} from './actions/action'
 import {countDown} from './actions/action'
+import {connect} from 'react-redux'
 
 class App extends Component {
 
+   dispatchBtnAction = (e) => {
+    const direction = e.target.dataset.type
+    if(direction === "INCREASE_COUNTER"){
+      this.props.countUp(direction)
+    }else{
+      this.props.countDown(direction)
+    }
+  }
+  
+   setActiveSession = (e) => {
+        const activeSession = e.target.value
+        this.props.setSession(activeSession)
+      };
   render() {
    
     return (
@@ -24,8 +37,8 @@ class App extends Component {
               <span className="Counter__text--grey">ACTIVE SESSION: </span>
               <select
                 className="Counter__text--grey"
-                onChange={setActiveSession}
-                value={store.getState().activeSession}
+                onChange={this.setActiveSession}
+                value={this.props.activeSession}
               >
                 <option>DAYS</option>
                 <option>HOURS</option>
@@ -37,7 +50,7 @@ class App extends Component {
             <div className="Counter--main__values">
               <div>
                 <span className="App__text--white Counter__text--large">
-                  {store.getState().days}
+                  {this.props.days}
                 </span>
                 <span className="Counter__text--grey">DAYS</span>
               </div>
@@ -46,7 +59,7 @@ class App extends Component {
 
               <div>
                 <span className="App__text--white Counter__text--large">
-                  {store.getState().hours}
+                  {this.props.hours}
                 </span>
                 <span className="Counter__text--grey">HOURS</span>
               </div>
@@ -55,7 +68,7 @@ class App extends Component {
 
               <div>
                 <span className="App__text--white Counter__text--large">
-                  {store.getState().minutes}
+                  {this.props.minutes}
                 </span>
                 <span className="Counter__text--grey">MINUTES</span>
               </div>
@@ -64,17 +77,17 @@ class App extends Component {
 
               <div>
                 <span className="App__text--white Counter__text--large">
-                  {store.getState().seconds}
+                  {this.props.seconds}
                 </span>
                 <span className="Counter__text--grey">SECONDS</span>
               </div>
             </div>
           </main>
           <div className="App__buttons">
-            <button className="App__text--white" data-type="INCREASE_COUNTER" onClick={dispatchBtnAction}>
+            <button className="App__text--white" data-type="INCREASE_COUNTER" onClick={this.dispatchBtnAction}>
               INCREASE
             </button>
-            <button className="App__text--white" data-type="DECREASE_COUNTER" onClick={dispatchBtnAction}>
+            <button className="App__text--white" data-type="DECREASE_COUNTER" onClick={this.dispatchBtnAction}>
               DECREASE
             </button>
           </div>
@@ -84,18 +97,22 @@ class App extends Component {
   }
 }
 
-const dispatchBtnAction = (e) => {
-  const direction = e.target.dataset.type
-  if(direction === "INCREASE_COUNTER"){
-    store.dispatch(countUp(direction))
-  }else{
-    store.dispatch(countDown(direction))
+const mapStateToProps = (state) => {
+  return{
+    days: state.days,
+    hours: state.hours,
+    minutes: state.minutes,
+    seconds: state.seconds,
+    activeSession: state.activeSession
   }
 }
 
- const setActiveSession = (e) => {
-      const activeSession = e.target.value
-      store.dispatch(setSession(activeSession))
-    };
+const mapDispatchToProps = (dispatch) => {
+  return{
+    countUp: (direction) => dispatch(countUp(direction)),
+    countDown: (direction) => dispatch (countDown(direction)),
+    setSession: (as) => dispatch(setSession(as))
+  }
+}
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
